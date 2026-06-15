@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../themes/app_colors.dart';
-import '../themes/theme_provider.dart';
+import '../core/themes/app_colors.dart';
+import '../core/themes/theme_provider.dart';
 import '../provider/custom_quiz_provider.dart';
 import '../provider/quiz_provider.dart';
 
@@ -41,7 +42,7 @@ class HomeScreen extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Icon(Icons.emoji_events, size: 30),
+                      const FaIcon(FontAwesomeIcons.trophy, size: 28),
                     ],
                   ),
                 ),
@@ -64,7 +65,7 @@ class HomeScreen extends ConsumerWidget {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 22),
-            _UpgradeStrip(isDark: isDark),
+            const _UpgradeStrip(),
             const SizedBox(height: 26),
             Row(
               children: [
@@ -74,28 +75,31 @@ class HomeScreen extends ConsumerWidget {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
                 const SizedBox(width: 8),
-                Text('Popular Game', style: Theme.of(context).textTheme.titleLarge),
+                Text(
+                  'Popular Game',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ],
             ),
             const SizedBox(height: 14),
             _DifficultyCard(
               title: 'Easy',
               subtitle: 'Warm up with quick wins and friendly trivia.',
-              color: AppColors.cardYellow,
+              color: isDark ? AppColors.cardYellowDark : AppColors.cardYellow,
               icon: Icons.lightbulb,
               onTap: () => _startApiQuiz(ref, 'easy'),
             ),
             _DifficultyCard(
               title: 'Medium',
               subtitle: 'Sharper questions for a focused quiz streak.',
-              color: AppColors.primary,
+              color: isDark ? AppColors.primaryDark : AppColors.primary,
               icon: Icons.psychology,
               onTap: () => _startApiQuiz(ref, 'medium'),
             ),
             _DifficultyCard(
               title: 'Hard',
               subtitle: 'High-pressure trivia for serious knowledge hunters.',
-              color: AppColors.cardGreen,
+              color: isDark ? AppColors.cardGreenDark : AppColors.cardGreen,
               icon: Icons.workspace_premium,
               onTap: () => _startApiQuiz(ref, 'hard'),
             ),
@@ -166,16 +170,16 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class _UpgradeStrip extends StatelessWidget {
-  const _UpgradeStrip({required this.isDark});
-
-  final bool isDark;
+  const _UpgradeStrip();
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.white,
+        color: scheme.surface,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Row(
@@ -194,7 +198,10 @@ class _UpgradeStrip extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () {},
-            style: FilledButton.styleFrom(backgroundColor: AppColors.black),
+            style: FilledButton.styleFrom(
+              backgroundColor: scheme.primary,
+              foregroundColor: AppColors.black,
+            ),
             child: const Text('Upgrade'),
           ),
         ],
@@ -220,6 +227,8 @@ class _DifficultyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
       child: LayoutBuilder(
@@ -249,7 +258,7 @@ class _DifficultyCard extends StatelessWidget {
                     child: Icon(
                       icon,
                       size: iconSize,
-                      color: Colors.white.withOpacity(.38),
+                      color: scheme.onPrimary.withOpacity(.38),
                     ),
                   ),
                   Column(
@@ -290,7 +299,10 @@ class _DifficultyCard extends StatelessWidget {
                         subtitle,
                         maxLines: isCompact ? 3 : 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Colors.white, height: 1.35),
+                        style: TextStyle(
+                          color: scheme.onPrimary.withOpacity(.92),
+                          height: 1.35,
+                        ),
                       ),
                     ],
                   ),

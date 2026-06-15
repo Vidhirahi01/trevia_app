@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../themes/app_colors.dart';
+import '../core/themes/app_colors.dart';
 import '../models/question_model.dart';
 import '../provider/custom_quiz_provider.dart';
 
@@ -103,7 +103,10 @@ class _AdminQuizScreenState extends ConsumerState<AdminQuizScreen> {
                               selected: _correctIndexes.contains(index),
                               showCheckmark: true,
                               label: const Icon(Icons.check),
-                              selectedColor: AppColors.success.withOpacity(.25),
+                              selectedColor: (isDark
+                                      ? AppColors.successDark
+                                      : AppColors.success)
+                                  .withOpacity(.25),
                               onSelected: (_) {
                                 setState(() {
                                   if (_correctIndexes.contains(index)) {
@@ -150,7 +153,7 @@ class _AdminQuizScreenState extends ConsumerState<AdminQuizScreen> {
               Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurface : AppColors.white,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: const Text('No custom questions yet. Add one above.'),
@@ -267,15 +270,16 @@ class _QuestionTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : AppColors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(
-            backgroundColor: AppColors.cardYellow,
-            child: Icon(Icons.question_mark, color: AppColors.black),
+          CircleAvatar(
+            backgroundColor:
+                isDark ? AppColors.cardYellowDark : AppColors.cardYellow,
+            child: const Icon(Icons.question_mark, color: AppColors.black),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -294,9 +298,12 @@ class _QuestionTile extends StatelessWidget {
                     final isCorrect = question.correctAnswers.contains(option);
                     return Chip(
                       label: Text(option),
-                      avatar: isCorrect ? const Icon(Icons.check, size: 16) : null,
-                      backgroundColor:
-                          isCorrect ? AppColors.success.withOpacity(.18) : null,
+                      avatar:
+                          isCorrect ? const Icon(Icons.check, size: 16) : null,
+                      backgroundColor: isCorrect
+                          ? (isDark ? AppColors.successDark : AppColors.success)
+                              .withOpacity(.18)
+                          : null,
                     );
                   }).toList(),
                 ),

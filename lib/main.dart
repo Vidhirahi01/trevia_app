@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:trevia_app/core/themes/app_theme.dart';
+import 'package:trevia_app/core/themes/theme_provider.dart';
 
-import 'themes/app_theme.dart';
-import 'themes/theme_provider.dart';
 import 'screens/admin_quiz_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/quiz_screen.dart';

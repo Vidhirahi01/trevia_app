@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-import '../themes/app_colors.dart';
+import '../core/themes/app_colors.dart';
 import '../models/question_model.dart';
 import '../provider/quiz_provider.dart';
 import '../provider/quiz_state.dart';
@@ -24,6 +25,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     final quizState = ref.watch(quizProvider);
+    final scheme = Theme.of(context).colorScheme;
 
     ref.listen<QuizState>(quizProvider, (previous, next) {
       if (next.isFinished) {
@@ -47,7 +49,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                 'Loading Quiz',
                 style: GoogleFonts.bebasNeue(
                   fontSize: 34,
-                  color: AppColors.primary,
+                  color: scheme.primary,
                 ),
               ),
             ],
@@ -64,7 +66,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.wifi_off, size: 58, color: AppColors.primary),
+                Icon(Icons.wifi_off, size: 58, color: scheme.primary),
                 const SizedBox(height: 18),
                 Text(
                   quizState.errorMessage!,
@@ -146,6 +148,8 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   Widget _buildHeader(QuizState state) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -169,7 +173,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Text('🏆', style: TextStyle(fontSize: 28)),
+                  const FaIcon(FontAwesomeIcons.trophy, size: 24),
                 ],
               ),
               Text(
@@ -203,7 +207,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                           : Icons.favorite_border,
                       key: ValueKey(index < state.lives),
                       color: index < state.lives
-                          ? AppColors.error
+                          ? scheme.error
                           : AppColors.inkMuted,
                     ),
                   ),
@@ -222,26 +226,29 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   Widget _buildProgressBar(QuizState state) {
+    final scheme = Theme.of(context).colorScheme;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: LinearProgressIndicator(
         minHeight: 10,
         value: (state.currentIndex + 1) / state.questions.length,
-        color: AppColors.primary,
-        backgroundColor: Colors.black12,
+        color: scheme.primary,
+        backgroundColor: scheme.surfaceContainerHighest,
       ),
     );
   }
 
   Widget _buildQuestionCard(String question, int currentIndex) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
 
     return Container(
       key: ValueKey(currentIndex),
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : Colors.white,
+        color: scheme.surface,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           if (!isDark)
@@ -260,27 +267,30 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
   }
 
   Widget _buildOptionTile(int index, String option, QuestionModel question) {
-    Color background = Theme.of(context).colorScheme.surface;
-    Color border = Colors.black12;
-    Color foreground = Theme.of(context).colorScheme.onSurface;
-    Color badgeBackground = AppColors.black;
-    Color badgeForeground = Colors.white;
+    final scheme = Theme.of(context).colorScheme;
+    Color background = scheme.surface;
+    Color border = scheme.outline.withOpacity(.25);
+    Color foreground = scheme.onSurface;
+    Color badgeBackground = scheme.surfaceContainerHighest;
+    Color badgeForeground = scheme.onSurface;
     IconData trailingIcon = Icons.arrow_forward;
 
     if (answerSubmitted) {
       if (question.isCorrect(option)) {
-        background = AppColors.success;
+        background = Theme.of(context).brightness == Brightness.dark
+            ? AppColors.successDark
+            : AppColors.success;
         foreground = Colors.white;
-        border = AppColors.success;
+        border = background;
         badgeBackground = Colors.white;
-        badgeForeground = AppColors.success;
+        badgeForeground = background;
         trailingIcon = Icons.check_circle;
       } else if (option == selectedAnswer) {
-        background = AppColors.error;
+        background = scheme.error;
         foreground = Colors.white;
-        border = AppColors.error;
+        border = background;
         badgeBackground = Colors.white;
-        badgeForeground = AppColors.error;
+        badgeForeground = background;
         trailingIcon = Icons.cancel;
       }
     }

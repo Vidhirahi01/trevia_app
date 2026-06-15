@@ -1,9 +1,9 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-import '../themes/app_colors.dart';
 import '../provider/quiz_provider.dart';
 
 class ResultScreen extends ConsumerStatefulWidget {
@@ -40,7 +40,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(quizProvider);
     final maxScore = state.questions.length * 10;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       body: Stack(
@@ -57,12 +57,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(26),
                     decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurface : AppColors.white,
+                      color: scheme.surface,
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Column(
                       children: [
-                        const Text('🏆', style: TextStyle(fontSize: 74)),
+                        FaIcon(
+                          FontAwesomeIcons.trophy,
+                          size: 68,
+                          color: scheme.primary,
+                        ),
                         const SizedBox(height: 8),
                         Text(
                           state.lives == 0 ? 'Out of Hearts' : 'Quiz Complete',
@@ -72,8 +76,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                         const SizedBox(height: 10),
                         Text(
                           '${state.score} / $maxScore',
-                          style: const TextStyle(
-                            color: AppColors.primary,
+                          style: TextStyle(
+                            color: scheme.primary,
                             fontSize: 42,
                             fontWeight: FontWeight.w900,
                           ),
